@@ -1,0 +1,104 @@
+[
+ {
+  "id": "dining_room",
+  "key": "18502a6651367e71",
+  "title": "Dining room",
+  "sub": "narrow protocol",
+  "index": "re10k_narrow_volsplat.json",
+  "target_view": 6,
+  "n_inputs": 6,
+  "n_gaussians": 301056,
+  "steps": [
+   "prediction",
+   "appearance 1",
+   "appearance 2",
+   "appearance 3",
+   "shape 1",
+   "shape 2",
+   "shape 3",
+   "shape 4",
+   "shape 5"
+  ],
+  "target_psnr": [
+   18.58,
+   27.21,
+   29.35,
+   27.93,
+   30.57,
+   30.98,
+   31.39,
+   31.56,
+   31.66
+  ],
+  "look_depth": 7.1733,
+  "fov_y": 58.82
+ },
+ {
+  "id": "rock",
+  "key": "64fe38ce3160d0fb",
+  "title": "Sculpture",
+  "sub": "narrow protocol",
+  "index": "re10k_narrow_volsplat.json",
+  "target_view": 0,
+  "n_inputs": 6,
+  "n_gaussians": 301056,
+  "steps": [
+   "prediction",
+   "appearance 1",
+   "appearance 2",
+   "appearance 3",
+   "shape 1",
+   "shape 2",
+   "shape 3",
+   "shape 4",
+   "shape 5"
+  ],
+  "target_psnr": [
+   24.03,
+   25.92,
+   25.86,
+   25.89,
+   27.01,
+   27.46,
+   27.77,
+   27.93,
+   28.08
+  ],
+  "look_depth": 2.4027,
+  "fov_y": 57.99
+ },
+ {
+  "id": "bathroom",
+  "key": "5e76b1824c7ecb1f",
+  "title": "Bathroom to bedroom",
+  "sub": "wide protocol",
+  "index": "re10k_wide_yonosplat.json",
+  "target_view": 4,
+  "n_inputs": 6,
+  "n_gaussians": 301056,
+  "steps": [
+   "prediction",
+   "appearance 1",
+   "appearance 2",
+   "appearance 3",
+   "shape 1",
+   "shape 2",
+   "shape 3",
+   "shape 4",
+   "shape 5"
+  ],
+  "target_psnr": [
+   26.97,
+   27.73,
+   27.78,
+   27.64,
+   29.69,
+   30.27,
+   30.48,
+   30.64,
+   30.71
+  ],
+  "look_depth": 3.0211,
+  "fov_y": 58.9
+ }
+]

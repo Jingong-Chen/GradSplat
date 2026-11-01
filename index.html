@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GradSplat: Gradients Inside the Forward Pass for Feed-Forward 3D Gaussian Splatting</title>
+  <meta name="description" content="GradSplat is a feed-forward 3D Gaussian Splatting model that refines its own Gaussians by learned gradient steps on the input views inside its forward pass, with no target view.">
+  <meta property="og:title" content="GradSplat: Gradients Inside the Forward Pass for Feed-Forward 3D Gaussian Splatting">
+  <meta property="og:description" content="A feed-forward 3D Gaussian Splatting model that takes learned gradient steps on its input views inside the forward pass.">
+  <meta property="og:image" content="https://jingong-chen.github.io/GradSplat/static/img/teaser_paper.jpg">
+  <meta property="og:url" content="https://jingong-chen.github.io/GradSplat/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="static/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.4/css/bulma.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/style.css">
+  <script type="importmap">
+    {"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                 "@mkkellogg/gaussian-splats-3d": "https://cdn.jsdelivr.net/npm/@mkkellogg/gaussian-splats-3d@0.4.7/build/gaussian-splats-3d.module.js"}}
+  </script>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-widescreen">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">GradSplat: Gradients Inside the Forward Pass <br>for Feed-Forward 3D Gaussian Splatting</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Jingong Chen<sup>1,2</sup>,</span>
+            <span class="author-block">Linlian Jiang<sup>3,4†</sup>,</span>
+            <span class="author-block">Guangyuan Li<sup>5,2†</sup>,</span>
+            <span class="author-block">Xinxin Zuo<sup>3</sup>,</span>
+            <span class="author-block">Yang Wang<sup>3,4</sup>,</span>
+            <span class="author-block">Chulwoo Pack<sup>1</sup>,</span>
+            <span class="author-block">Kyle Gao<sup>2</sup>,</span>
+            <span class="author-block">Kwanghee Won<sup>1*</sup></span>
+          </div>
+          <div class="is-size-6 publication-affils">
+            <span class="author-block"><sup>1</sup>South Dakota State University</span>
+            <span class="author-block"><sup>2</sup>Aalto University</span>
+            <span class="author-block"><sup>3</sup>Concordia University</span>
+            <span class="author-block"><sup>4</sup>Mila – Quebec AI Institute</span>
+            <span class="author-block"><sup>5</sup>ELLIS Institute Finland</span>
+          </div>
+          <div class="publication-notes"><sup>†</sup>Equal contribution &nbsp;&nbsp; <sup>*</sup>Corresponding author</div>
+          <div class="publication-links">
+            <span class="link-block"><a href="https://arxiv.org/pdf/2610.38951" class="external-link button is-normal is-rounded is-dark">
+              <span class="icon"><i class="fas fa-file-pdf"></i></span><span>Paper</span></a></span>
+            <span class="link-block"><a href="https://arxiv.org/abs/2610.38951" class="external-link button is-normal is-rounded is-dark">
+              <span class="icon"><i class="ai ai-arxiv"></i></span><span>arXiv</span></a></span>
+            <span class="link-block"><a href="https://github.com/Jingong-Chen/GradSplat" class="external-link button is-normal is-rounded is-dark">
+              <span class="icon"><i class="fab fa-github"></i></span><span>Code</span></a></span>
+            <span class="link-block"><a href="https://huggingface.co/Jingong/GradSplat" class="external-link button is-normal is-rounded is-dark">
+              <span class="icon">🤗</span><span>Model</span></a></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <img class="teaser-img" src="static/img/teaser_paper.jpg" alt="GradSplat renders its Gaussians as predicted once and after the gradient steps">
+      <h2 class="subtitle has-text-centered teaser-caption"><b>GradSplat</b> is a feed-forward model that reconstructs a scene as 3D Gaussians from a few views and refines them by gradient steps on the input views inside the model. Its Gaussians are rendered as predicted once and after the steps. One novel view is shown as rendered by GradSplat and in the ground truth, and the details compare it before the steps, after them and in the ground truth.</h2>
+    </div>
+  </div>
+</section>
+
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div class="carousel" id="video-carousel">
+        <div class="carousel-window"><div class="carousel-track">
+          <div class="carousel-item">
+            <video muted loop playsinline preload="auto" poster="static/video/teaser_dining_room_poster.jpg"><source src="static/video/teaser_dining_room.mp4" type="video/mp4"></video>
+            <p class="carousel-label">Dining room · narrow protocol</p>
+          </div>
+          <div class="carousel-item">
+            <video muted loop playsinline preload="metadata" poster="static/video/teaser_rock_poster.jpg"><source src="static/video/teaser_rock.mp4" type="video/mp4"></video>
+            <p class="carousel-label">Sculpture · narrow protocol</p>
+          </div>
+          <div class="carousel-item">
+            <video muted loop playsinline preload="metadata" poster="static/video/teaser_bathroom_poster.jpg"><source src="static/video/teaser_bathroom.mp4" type="video/mp4"></video>
+            <p class="carousel-label">Bathroom to bedroom · wide protocol</p>
+          </div>
+        </div></div>
+        <button class="carousel-nav prev" aria-label="previous video"><i class="fas fa-chevron-left"></i></button>
+        <button class="carousel-nav next" aria-label="next video"><i class="fas fa-chevron-right"></i></button>
+        <div class="carousel-dots"></div>
+      </div>
+      <p class="caption">Six input views of RealEstate10K test scenes, rendered along a path through the input cameras. Left: the Gaussians as the network predicts them in one pass. Right: GradSplat, after the gradient steps on the input views that the model takes inside the same forward pass.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>Feed-forward 3D Gaussian Splatting predicts a scene from a few images, but our predictor is less accurate than its own Gaussians optimized per scene on those images. This gap lies mostly in the shape of the Gaussians, their scale and rotation, since optimizing the shape alone recovers almost all of it and opacity and color recover less. Gradient steps on the input views correct this shape, and the model holds these views at inference. <em>Log-anisotropy correction</em> changes the axis ratios of each Gaussian in log space at constant volume, and <em>in-forward gradient refinement</em> renders the Gaussians into the input views and applies the gradient of the photometric loss with a learned recurrent update, first to opacity and color and then to the shape. <b>GradSplat</b> is a feed-forward model that refines its own Gaussians by learned gradient steps inside its forward pass, with no target view. On both complete six-view RealEstate10K protocols, it has the best PSNR and SSIM among nine methods and keeps its accuracy from 6 to 42 input views. Without fine-tuning, it is the most accurate on DL3DV and has the best PSNR and SSIM on ScanNet++.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Why Gradient Steps</h2>
+    <div class="content has-text-justified">
+      <p>Per-scene optimization fits the Gaussians of one scene by gradient steps on its input views. Applied to the output of our base predictor, with no target view, it raises the novel-view PSNR from 27.278 to 34.231 dB on eight RealEstate10K scenes. This gap is carried by the <b>shape</b> of the Gaussians, their scale and rotation: optimized alone on the input views, the shape recovers almost all of it, opacity and color recover less, and freezing the centers loses nothing. The predicted Gaussians are less anisotropic than the optimized ones and do not reproduce even their own input views. Optimizing their scale and rotation removes most of this error, but takes 1500 gradient steps.</p>
+    </div>
+    <img class="figure" src="static/img/motivation.jpg" alt="Motivation: one-pass prediction, per-scene optimization and GradSplat" loading="lazy">
+    <p class="caption">A feed-forward model predicts the Gaussians in one pass but leaves a large error on its input views (a). Per-scene optimization of their scale and rotation removes most of it with 1500 gradient steps (b). GradSplat takes gradient steps with a learned update inside the model and keeps the single pass (c). The maps show the mean absolute error against the input view.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Approach</h2>
+    <img class="figure" src="static/img/method.jpg" alt="GradSplat overview" loading="lazy">
+    <p class="caption">A backbone feeds a camera head, a dense head and a shape head. Each refinement step renders the Gaussians into the input views and applies the learned update 𝒰<sub>ψ</sub> to the gradient <b><i>g</i></b><sub><i>k</i></sub> of ℒ<sub>in</sub>. The four marks in 𝒰<sub>ψ</sub> are its transformer blocks, with attention within a view (green) and over all views (blue).</p>
+    <div class="content has-text-justified approach-text">
+      <p>A geometry backbone with frame and global attention, initialized from VGGT-Ω, feeds a camera head, a dense head and a shape head. The dense head predicts a depth and the raw parameters of one Gaussian for every input pixel. The refinement then takes three steps on the appearance and five on the shape. Each step renders the current Gaussians into the input views, backpropagates the mean squared error through the rasterizer and turns the gradient into an update with a learned network.</p>
+      <ul>
+        <li><b>In-forward gradient refinement.</b> The gradient of the input-view loss is an input of a learned update, computed on a detached copy of the parameters. The steps are fixed in number and unrolled in training, need no second derivative of the rasterizer, and run unchanged at inference.</li>
+        <li><b>Log-anisotropy correction.</b> The shape steps act on a zero-sum correction of the log scale and a rotation increment of each Gaussian. Extent moves between its axes at constant volume, and an axis ratio changes by a factor below e<sup>8</sup>.</li>
+        <li><b>Learned update.</b> Convolutions encode the parameters, the normalized gradient, the previous update and a running second moment; four transformer blocks attend within a view and across all views; a convolutional GRU carries a state from step to step.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="steps">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Gradient Steps Inside the Forward Pass</h2>
+    <p class="lead">One target view of each scene rendered after every step of the forward pass: three appearance steps on opacity and color, then five shape steps. The steps read only the input views; the target view and its ground truth are never seen. PSNR is measured on the target view at 224 × 224 pixels.</p>
+    <div class="row-chips steps-chips"></div>
+    <div class="steps-grid">
+      <figure class="steps-fig"><img class="steps-img" alt="rendering after the selected step"><figcaption class="steps-cap"></figcaption></figure>
+      <figure class="steps-fig"><img class="steps-gt" alt="ground truth of the target view"><figcaption>Ground truth (never seen by the model)</figcaption></figure>
+    </div>
+    <div class="steps-slider">
+      <input type="range" min="0" max="8" step="1" value="8" class="steps-range" aria-label="refinement step">
+      <div class="steps-ticks"></div>
+    </div>
+    <p class="small-note steps-note"></p>
+    <img class="figure mt-figure" src="static/img/steps_paper.jpg" alt="Renderings after every step" loading="lazy">
+    <p class="caption">One target view of three scenes of the narrow protocol before any step, after each of the K<sub>a</sub> appearance steps and each of the K<sub>s</sub> shape steps of the final model, and in the ground truth. The PSNR of this view is beneath each rendering.</p>
+  </div>
+</section>
+
+<section class="section" id="explore">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Explore the 3D Gaussians</h2>
+    <p class="lead">The 3D Gaussians of the released model for three RealEstate10K test scenes, from six input views with their cameras, rendered live in your browser. Switch between the Gaussians as predicted once and after GradSplat's gradient steps; the view starts at the first input camera. Drag to orbit, right-drag to pan, scroll to zoom.</p>
+    <div class="viewer-box splat-box">
+      <div class="viewer-canvas"></div>
+      <div class="viewer-status">Loading…</div>
+      <div class="viewer-info"></div>
+      <div class="state-toggle">
+        <button class="seg" data-s="pred">Predicted once</button>
+        <button class="seg active" data-s="ours">GradSplat</button>
+      </div>
+      <div class="viewer-tools">
+        <button class="tool btn-reset" title="Back to the first input camera"><i class="fas fa-house"></i></button>
+        <button class="tool btn-full" title="Full screen"><i class="fas fa-expand"></i></button>
+      </div>
+    </div>
+    <div class="input-strip"></div>
+    <div class="scene-picker splat-picker"></div>
+    <p class="small-note">Every input pixel carries one Gaussian (301,056 per scene), predicted from views of 224 × 224 pixels. In the browser the colors are rendered without the view-dependent part of the spherical harmonics, and rotations are stored with 8 bits per component.</p>
+  </div>
+</section>
+
+<section class="section" id="results">
+  <div class="container is-max-widescreen">
+    <h2 class="title is-3 has-text-centered">Comparisons with the State of the Art</h2>
+    <p class="lead">Every method is re-measured under one setting with released weights. Six input and eight target views per scene at 224 × 224 pixels; the narrow protocol uses the index released with VolSplat (7,128 scenes), the wide protocol the index released with YoNoSplat (1,600 scenes), and the right block adds input views to the fixed targets of the narrow protocol (6,444 scenes). <span class="best-key">best</span> <span class="second-key">second</span> per block.</p>
+    <div class="table-box" id="table1"></div>
+    <p class="small-note">In the lower block AnySplat and GradSplat also estimate the intrinsics and the target cameras, GradSplat with a constant κ shared by all scenes, and YoNoSplat† keeps the ground-truth intrinsics and target cameras. § two-view weights; ‡ a training mixture that contains DL3DV and not RealEstate10K; × a view embedding that holds six views.</p>
+  </div>
+  <div class="container is-max-desktop">
+    <img class="figure mt-figure" src="static/img/qual_re10k.jpg" alt="Qualitative comparison on RealEstate10K" loading="lazy">
+    <p class="caption">The upper three rows are scenes of the narrow protocol and the lower two scenes of the wide protocol. Each row shows the six input views, one target view rendered by every method and the ground truth. The boxed region is magnified in the opposite corner, and AnySplat, which renders from its own estimated cameras, is not shown.</p>
+    <img class="figure mt-figure" src="static/img/qual_wide.jpg" alt="Qualitative comparison on the wide protocol" loading="lazy">
+    <p class="caption">Further scenes of the wide protocol, in the layout of the figure above, with the PSNR of the scene beneath each rendering.</p>
+
+    <h3 class="title is-4 has-text-centered">Different Numbers of Input Views</h3>
+    <img class="figure" src="static/img/views_psnr.png" alt="PSNR for different numbers of input views" loading="lazy">
+    <p class="caption">PSNR for V input views on the view-count index, the targets of the narrow protocol (6,444 scenes), from the table above. pixelSplat and TranSplat, whose view embedding holds six views, are left out.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Cross-Dataset Generalization</h2>
+    <p class="lead">The upper block applies the RealEstate10K weights without fine-tuning; the lower block uses weights trained on DL3DV. DL3DV: 139 of the 140 scenes of the index released with ReSplat. ScanNet++: the validation set, six input and three target views per scene.</p>
+    <div class="table-box narrow-table" id="table2"></div>
+    <p class="small-note">YoNoSplat is not evaluated on ScanNet++, since its input views rendered back score 13.733 dB there and the setting requires 20 dB. ‡ here marks a training mixture that contains DL3DV and ScanNet++ and not RealEstate10K.</p>
+    <img class="figure mt-figure" src="static/img/qual_dl3dv.jpg" alt="Qualitative comparison on DL3DV" loading="lazy">
+    <p class="caption">Each row shows one target view of DL3DV rendered by every method and the ground truth, and the boxed region is magnified. ⋆ marks weights trained on DL3DV, all other columns use RealEstate10K weights, and TranSplat and AnySplat are not shown.</p>
+    <img class="figure mt-figure" src="static/img/qual_scannetpp.jpg" alt="Qualitative comparison on ScanNet++" loading="lazy">
+    <p class="caption">Every method uses its RealEstate10K weights without fine-tuning. Each row shows one target view of the ScanNet++ validation set rendered by every method and the ground truth, and the boxed region is magnified. YoNoSplat and AnySplat are not shown.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Without Input Poses</h2>
+    <p class="lead">Given the images alone, GradSplat builds its Gaussians in its own predicted cameras with a constant scale κ, and the target cameras are estimated from the input and target images together, the protocol of AnySplat.</p>
+    <img class="figure" src="static/img/qual_posefree.jpg" alt="Renderings without input poses" loading="lazy">
+    <p class="caption">Three scenes of the narrow protocol with their input views, one target view rendered by AnySplat and by GradSplat, and the ground truth. Neither method receives the input poses.</p>
+  </div>
+</section>
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <div class="bibtex">
+      <button id="copy-bibtex">Copy</button>
+<pre id="bibtex-text"><code>@article{chen2026gradsplat,
+  title   = {GradSplat: Gradients Inside the Forward Pass for Feed-Forward 3D Gaussian Splatting},
+  author  = {Chen, Jingong and Jiang, Linlian and Li, Guangyuan and Zuo, Xinxin and
+             Wang, Yang and Pack, Chulwoo and Gao, Kyle and Won, Kwanghee},
+  journal = {arXiv preprint arXiv:2610.38951},
+  year    = {2026}
+}</code></pre>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="acknowledgments">
+  <div class="container is-max-desktop content">
+    <h2 class="title">Acknowledgments</h2>
+    <p>This work was supported by the U.S. National Science Foundation under Grant No. 2316400. The authors also acknowledge the South Dakota State University High Performance Computing (SDSU HPC) team for providing access to and support for the university's high-performance computing resources. We acknowledge CSC – IT Center for Science, Finland, for providing access to Roihu and to LUMI, which is owned by the EuroHPC Joint Undertaking and hosted by CSC – IT Center for Science, Finland, in collaboration with the LUMI consortium.</p>
+    <p>GradSplat builds on <a href="https://github.com/facebookresearch/vggt-omega">VGGT-Ω</a> and <a href="https://github.com/facebookresearch/vggt">VGGT</a>, and rasterizes with <a href="https://github.com/nerfstudio-project/gsplat">gsplat</a>. We train on <a href="https://google.github.io/realestate10k/">RealEstate10K</a> in the format released by <a href="https://github.com/dcharatan/pixelsplat">pixelSplat</a>, evaluate on <a href="https://github.com/DL3DV-10K/Dataset">DL3DV</a> and <a href="https://kaldir.vc.in.tum.de/scannetpp/">ScanNet++</a>, and use the evaluation indices released with <a href="https://github.com/ziplab/VolSplat">VolSplat</a>, <a href="https://github.com/cvg/yonosplat">YoNoSplat</a> and <a href="https://github.com/cvg/resplat">ReSplat</a>. We thank the authors of pixelSplat, <a href="https://github.com/donydchen/mvsplat">MVSplat</a>, <a href="https://github.com/xingyoujun/transplat">TranSplat</a>, <a href="https://github.com/cvg/depthsplat">DepthSplat</a>, VolSplat, ReSplat, YoNoSplat and <a href="https://github.com/InternRobotics/AnySplat">AnySplat</a> for releasing the code and weights we compare against. The example scenes are from the RealEstate10K test set.</p>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link" href="https://arxiv.org/pdf/2610.38951" aria-label="paper"><i class="fas fa-file-pdf"></i></a>
+      <a class="icon-link" href="https://github.com/Jingong-Chen/GradSplat" aria-label="code"><i class="fab fa-github"></i></a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content has-text-centered">
+          <p>This website is adapted from the <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> template, licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>. Gaussians are rendered with <a href="https://github.com/mkkellogg/GaussianSplats3D">GaussianSplats3D</a> and <a href="https://threejs.org">three.js</a>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="static/js/main.js"></script>
+</body>
+</html>

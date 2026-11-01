@@ -1,0 +1,163 @@
+<table class="res">
+<thead><tr><th rowspan=2>Method</th>
+<th class="grp sep" colspan="3">Narrow protocol</th>
+<th class="grp sep" colspan="3">Wide protocol</th>
+<th class="grp sep" colspan="5">PSNR ↑ for V input views</th>
+</tr><tr>
+<th class="sep">PSNR ↑</th>
+<th class="">SSIM ↑</th>
+<th class="">LPIPS ↓</th>
+<th class="sep">PSNR ↑</th>
+<th class="">SSIM ↑</th>
+<th class="">LPIPS ↓</th>
+<th class="sep">V=6</th>
+<th class="">12</th>
+<th class="">24</th>
+<th class="">32</th>
+<th class="">42</th>
+</tr></thead><tbody>
+<tr><td class="m">pixelSplat</td>
+<td class="sep">29.143</td>
+<td class="">0.9141</td>
+<td class="">0.1773</td>
+<td class="sep">19.748</td>
+<td class="">0.6239</td>
+<td class="">0.4594</td>
+<td class="sep">28.968</td>
+<td class="">×</td>
+<td class="">×</td>
+<td class="">×</td>
+<td class="">×</td>
+</tr>
+<tr><td class="m">MVSplat</td>
+<td class="sep">30.140</td>
+<td class="">0.9418</td>
+<td class="">0.0774</td>
+<td class="sep">20.983</td>
+<td class="">0.7566</td>
+<td class="">0.2542</td>
+<td class="sep">29.954</td>
+<td class="">28.059</td>
+<td class="">26.666</td>
+<td class="">26.379</td>
+<td class="">26.009</td>
+</tr>
+<tr><td class="m">TranSplat</td>
+<td class="sep">30.464</td>
+<td class="">0.9296</td>
+<td class="">0.1454</td>
+<td class="sep">19.849</td>
+<td class="">0.6489</td>
+<td class="">0.4265</td>
+<td class="sep">30.289</td>
+<td class="">×</td>
+<td class="">×</td>
+<td class="">×</td>
+<td class="">×</td>
+</tr>
+<tr><td class="m">DepthSplat</td>
+<td class="second sep">31.418</td>
+<td class="second">0.9524</td>
+<td class="second">0.0656</td>
+<td class="sep">23.018</td>
+<td class="">0.8270</td>
+<td class="">0.1937</td>
+<td class="second sep">31.241</td>
+<td class="">29.318</td>
+<td class="">26.978</td>
+<td class="">26.533</td>
+<td class="">25.594</td>
+</tr>
+<tr><td class="m">VolSplat</td>
+<td class="sep">31.243</td>
+<td class="second">0.9524</td>
+<td class="second">0.0656</td>
+<td class="sep">23.042</td>
+<td class="">0.8217</td>
+<td class="">0.2069</td>
+<td class="sep">31.120</td>
+<td class="">29.285</td>
+<td class="">26.936</td>
+<td class="">26.676</td>
+<td class="">25.829</td>
+</tr>
+<tr><td class="m">ReSplat§</td>
+<td class="sep">29.139</td>
+<td class="">0.9272</td>
+<td class="">0.0915</td>
+<td class="sep">24.681</td>
+<td class="">0.8722</td>
+<td class="">0.1471</td>
+<td class="sep">28.995</td>
+<td class="">27.419</td>
+<td class="">24.559</td>
+<td class="">24.415</td>
+<td class="">23.675</td>
+</tr>
+<tr><td class="m">YoNoSplat</td>
+<td class="sep">30.500</td>
+<td class="">0.9390</td>
+<td class="">0.0729</td>
+<td class="second sep">25.707</td>
+<td class="second">0.8779</td>
+<td class="best">0.1295</td>
+<td class="sep">30.544</td>
+<td class="second">31.038</td>
+<td class="second">31.233</td>
+<td class="second">31.199</td>
+<td class="second">31.183</td>
+</tr>
+<tr class="ours"><td class="m"><b>GradSplat</b></td>
+<td class="best sep">33.683</td>
+<td class="best">0.9593</td>
+<td class="best">0.0640</td>
+<td class="best sep">26.755</td>
+<td class="best">0.8993</td>
+<td class="second">0.1301</td>
+<td class="best sep">33.636</td>
+<td class="best">34.631</td>
+<td class="best">34.401</td>
+<td class="best">34.382</td>
+<td class="best">34.801</td>
+</tr>
+<tr class="block"><td class="m" colspan="12"><i>Without input poses</i></td></tr>
+<tr><td class="m">AnySplat‡</td>
+<td class="sep">19.629</td>
+<td class="">0.6160</td>
+<td class="">0.2949</td>
+<td class="sep">15.525</td>
+<td class="">0.4250</td>
+<td class="">0.4414</td>
+<td class="sep">19.523</td>
+<td class="">20.226</td>
+<td class="">20.397</td>
+<td class="">20.500</td>
+<td class="">20.592</td>
+</tr>
+<tr><td class="m">YoNoSplat†</td>
+<td class="best sep">27.816</td>
+<td class="best">0.8982</td>
+<td class="best">0.0848</td>
+<td class="best sep">21.861</td>
+<td class="best">0.7310</td>
+<td class="best">0.1868</td>
+<td class="best sep">27.921</td>
+<td class="second">28.063</td>
+<td class="second">28.046</td>
+<td class="second">27.832</td>
+<td class="second">27.848</td>
+</tr>
+<tr class="ours"><td class="m"><b>GradSplat</b></td>
+<td class="second sep">26.914</td>
+<td class="second">0.8863</td>
+<td class="second">0.1053</td>
+<td class="second sep">20.901</td>
+<td class="second">0.6945</td>
+<td class="second">0.2426</td>
+<td class="second sep">26.792</td>
+<td class="best">28.896</td>
+<td class="best">30.098</td>
+<td class="best">30.517</td>
+<td class="best">31.007</td>
+</tr>
+</tbody></table>
