@@ -1,0 +1,9 @@
+# Install PyTorch for your CUDA first (https://pytorch.org), then: pip install -e .
+torch>=2.3
+numpy
+Pillow
+safetensors
+huggingface_hub>=0.23
+gsplat>=1.4
+plyfile
+imageio[ffmpeg]

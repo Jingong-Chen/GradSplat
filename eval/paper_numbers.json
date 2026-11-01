@@ -1,0 +1,23 @@
+{
+  "_note": "Values of the paper (arXiv:2610.38951): Table 1, Table 2 and the supplement. Keys are <protocol>[_posefree]@<weights>, with the weights re10k (model.safetensors, trained on RealEstate10K) or dl3dv (model.dl3dv.safetensors, fine-tuned on DL3DV).",
+  "re10k_narrow@re10k": {"psnr": 33.683, "ssim": 0.9593, "lpips": 0.0640},
+  "re10k_wide@re10k": {"psnr": 26.755, "ssim": 0.8993, "lpips": 0.1301},
+  "re10k_narrow_posefree@re10k": {"psnr": 26.914, "ssim": 0.8863, "lpips": 0.1053},
+  "re10k_wide_posefree@re10k": {"psnr": 20.901, "ssim": 0.6945, "lpips": 0.2426},
+  "dl3dv@re10k": {"psnr": 24.787, "ssim": 0.8448, "lpips": 0.1919},
+  "scannetpp@re10k": {"psnr": 21.609, "ssim": 0.7540, "lpips": 0.3184},
+  "dl3dv@dl3dv": {"psnr": 26.104, "ssim": 0.8802, "lpips": 0.1505},
+  "re10k_views_2@re10k": {"psnr": 28.492},
+  "re10k_views_3@re10k": {"psnr": 31.490},
+  "re10k_views_4@re10k": {"psnr": 32.501},
+  "re10k_views_6@re10k": {"psnr": 33.636},
+  "re10k_views_12@re10k": {"psnr": 34.631},
+  "re10k_views_24@re10k": {"psnr": 34.401},
+  "re10k_views_32@re10k": {"psnr": 34.382},
+  "re10k_views_42@re10k": {"psnr": 34.801},
+  "re10k_views_6_posefree@re10k": {"psnr": 26.792},
+  "re10k_views_12_posefree@re10k": {"psnr": 28.896},
+  "re10k_views_24_posefree@re10k": {"psnr": 30.098},
+  "re10k_views_32_posefree@re10k": {"psnr": 30.517},
+  "re10k_views_42_posefree@re10k": {"psnr": 31.007}
+}
