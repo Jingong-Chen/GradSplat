@@ -93,14 +93,23 @@ async function initExplore() {
       sphericalHarmonicsDegree: 0, enableOptionalEffects: true, dynamicScene: false,
       logLevel: GS.LogLevel ? GS.LogLevel.None : 0,
     });
+    // The loader sizes its buffer from Content-Length, which a server that gzips .splat files (GitHub Pages does)
+    // reports for the compressed body. Download the files here, where the browser decompresses them, and hand the
+    // loader blob URLs of the exact size.
+    let urls = [];
     try {
-      await viewer.addSplatScenes([
-        {path: `static/splats/${scene.id}_pred.splat`, splatAlphaRemovalThreshold: 1},
-        {path: `static/splats/${scene.id}_ours.splat`, splatAlphaRemovalThreshold: 1},
-      ], false);
+      urls = await Promise.all(["pred", "ours"].map(async (s) => {
+        const r = await fetch(`static/splats/${scene.id}_${s}.splat`);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return URL.createObjectURL(await r.blob());
+      }));
+      if (my !== token) { urls.forEach((u) => URL.revokeObjectURL(u)); viewer.dispose(); return; }
+      await viewer.addSplatScenes(urls.map((u) => ({path: u, format: GS.SceneFormat.Splat, splatAlphaRemovalThreshold: 1})), false);
     } catch (e) {
       status.textContent = "Could not load the Gaussians: " + e;
       return;
+    } finally {
+      urls.forEach((u) => URL.revokeObjectURL(u));
     }
     if (my !== token) { viewer.dispose(); return; }
     viewer.start();
