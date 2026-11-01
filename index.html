@@ -18,10 +18,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
   <link rel="stylesheet" href="static/css/style.css">
-  <script type="importmap">
-    {"imports": {"three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-                 "@mkkellogg/gaussian-splats-3d": "https://cdn.jsdelivr.net/npm/@mkkellogg/gaussian-splats-3d@0.4.7/build/gaussian-splats-3d.module.js"}}
-  </script>
 </head>
 <body>
 
@@ -80,35 +76,35 @@
       <div class="carousel" id="video-carousel">
         <div class="carousel-window"><div class="carousel-track">
           <div class="carousel-item">
-            <video muted loop playsinline preload="auto" poster="static/video/teaser_temple_poster.jpg"><source src="static/video/teaser_temple.mp4" type="video/mp4"></video>
+            <video muted loop playsinline preload="auto" poster="static/video/methods_temple_poster.jpg"><source src="static/video/methods_temple.mp4" type="video/mp4"></video>
             <p class="carousel-label">Temple guardians · DL3DV, zero-shot</p>
           </div>
           <div class="carousel-item">
-            <video muted loop playsinline preload="metadata" poster="static/video/teaser_billiard_room_poster.jpg"><source src="static/video/teaser_billiard_room.mp4" type="video/mp4"></video>
+            <video muted loop playsinline preload="metadata" poster="static/video/methods_billiard_room_poster.jpg"><source src="static/video/methods_billiard_room.mp4" type="video/mp4"></video>
             <p class="carousel-label">Billiard room · RealEstate10K, narrow protocol</p>
           </div>
           <div class="carousel-item">
-            <video muted loop playsinline preload="metadata" poster="static/video/teaser_reading_room_poster.jpg"><source src="static/video/teaser_reading_room.mp4" type="video/mp4"></video>
+            <video muted loop playsinline preload="metadata" poster="static/video/methods_reading_room_poster.jpg"><source src="static/video/methods_reading_room.mp4" type="video/mp4"></video>
             <p class="carousel-label">Reading room · DL3DV, zero-shot</p>
           </div>
           <div class="carousel-item">
-            <video muted loop playsinline preload="metadata" poster="static/video/teaser_hillside_poster.jpg"><source src="static/video/teaser_hillside.mp4" type="video/mp4"></video>
+            <video muted loop playsinline preload="metadata" poster="static/video/methods_hillside_poster.jpg"><source src="static/video/methods_hillside.mp4" type="video/mp4"></video>
             <p class="carousel-label">Hillside estate · RealEstate10K, wide protocol</p>
           </div>
           <div class="carousel-item">
-            <video muted loop playsinline preload="metadata" poster="static/video/teaser_kitchen_poster.jpg"><source src="static/video/teaser_kitchen.mp4" type="video/mp4"></video>
+            <video muted loop playsinline preload="metadata" poster="static/video/methods_kitchen_poster.jpg"><source src="static/video/methods_kitchen.mp4" type="video/mp4"></video>
             <p class="carousel-label">Kitchen · RealEstate10K, 12 input views</p>
           </div>
           <div class="carousel-item">
-            <video muted loop playsinline preload="metadata" poster="static/video/teaser_courtyard_poster.jpg"><source src="static/video/teaser_courtyard.mp4" type="video/mp4"></video>
+            <video muted loop playsinline preload="metadata" poster="static/video/methods_courtyard_poster.jpg"><source src="static/video/methods_courtyard.mp4" type="video/mp4"></video>
             <p class="carousel-label">Statue courtyard · DL3DV, zero-shot</p>
           </div>
           <div class="carousel-item">
-            <video muted loop playsinline preload="metadata" poster="static/video/teaser_paint_store_poster.jpg"><source src="static/video/teaser_paint_store.mp4" type="video/mp4"></video>
+            <video muted loop playsinline preload="metadata" poster="static/video/methods_paint_store_poster.jpg"><source src="static/video/methods_paint_store.mp4" type="video/mp4"></video>
             <p class="carousel-label">Paint store · DL3DV, zero-shot</p>
           </div>
           <div class="carousel-item">
-            <video muted loop playsinline preload="metadata" poster="static/video/teaser_dorm_poster.jpg"><source src="static/video/teaser_dorm.mp4" type="video/mp4"></video>
+            <video muted loop playsinline preload="metadata" poster="static/video/methods_dorm_poster.jpg"><source src="static/video/methods_dorm.mp4" type="video/mp4"></video>
             <p class="carousel-label">Dorm room · ScanNet++, zero-shot</p>
           </div>
         </div></div>
@@ -116,7 +112,7 @@
         <button class="carousel-nav next" aria-label="next video"><i class="fas fa-chevron-right"></i></button>
         <div class="carousel-dots"></div>
       </div>
-      <p class="caption">Test scenes rendered along a path through their input cameras, from six input views unless marked. Left: the Gaussians as the network predicts them in one pass. Right: GradSplat, after the gradient steps on the input views that the model takes inside the same forward pass. DL3DV and ScanNet++ scenes use the RealEstate10K weights without fine-tuning.</p>
+      <p class="caption">Test scenes rendered by every method along a path through their input cameras, from six input views unless marked. Every method uses its RealEstate10K weights, also on DL3DV and ScanNet++; § marks two-view weights.</p>
     </div>
   </div>
 </section>
@@ -177,29 +173,6 @@
     <p class="small-note steps-note"></p>
     <img class="figure mt-figure" src="static/img/steps_paper.jpg" alt="Renderings after every step" loading="lazy">
     <p class="caption">One target view of three scenes of the narrow protocol before any step, after each of the K<sub>a</sub> appearance steps and each of the K<sub>s</sub> shape steps of the final model, and in the ground truth. The PSNR of this view is beneath each rendering.</p>
-  </div>
-</section>
-
-<section class="section" id="explore">
-  <div class="container is-max-desktop">
-    <h2 class="title is-3 has-text-centered">Explore the 3D Gaussians</h2>
-    <p class="lead">The 3D Gaussians of the released model for test scenes of RealEstate10K, DL3DV and ScanNet++, from six input views with their cameras, rendered live in your browser; DL3DV and ScanNet++ use the RealEstate10K weights without fine-tuning. Switch between the Gaussians as predicted once and after GradSplat's gradient steps; the view starts at the first input camera. Drag to orbit and scroll to zoom.</p>
-    <div class="viewer-box splat-box">
-      <div class="viewer-canvas"></div>
-      <div class="viewer-status">Loading…</div>
-      <div class="viewer-info"></div>
-      <div class="state-toggle">
-        <button class="seg" data-s="pred">Predicted once</button>
-        <button class="seg active" data-s="ours">GradSplat</button>
-      </div>
-      <div class="viewer-tools">
-        <button class="tool btn-reset" title="Back to the first input camera"><i class="fas fa-house"></i></button>
-        <button class="tool btn-full" title="Full screen"><i class="fas fa-expand"></i></button>
-      </div>
-    </div>
-    <div class="input-strip"></div>
-    <div class="scene-picker splat-picker"></div>
-    <p class="small-note">Every input pixel carries one Gaussian (301,056 per scene), predicted from views of 224 × 224 pixels. In the browser the colors are rendered without the view-dependent part of the spherical harmonics, and rotations are stored with 8 bits per component.</p>
   </div>
 </section>
 
@@ -283,7 +256,7 @@
   <div class="container is-max-desktop content">
     <h2 class="title">Acknowledgments</h2>
     <p>This work was supported by the U.S. National Science Foundation under Grant No. 2316400. The authors also acknowledge the South Dakota State University High Performance Computing (SDSU HPC) team for providing access to and support for the university's high-performance computing resources. We acknowledge CSC – IT Center for Science, Finland, for providing access to Roihu and to LUMI, which is owned by the EuroHPC Joint Undertaking and hosted by CSC – IT Center for Science, Finland, in collaboration with the LUMI consortium.</p>
-    <p>GradSplat builds on <a href="https://github.com/facebookresearch/vggt-omega">VGGT-Ω</a> and <a href="https://github.com/facebookresearch/vggt">VGGT</a>, and rasterizes with <a href="https://github.com/nerfstudio-project/gsplat">gsplat</a>. We train on <a href="https://google.github.io/realestate10k/">RealEstate10K</a> in the format released by <a href="https://github.com/dcharatan/pixelsplat">pixelSplat</a>, evaluate on <a href="https://github.com/DL3DV-10K/Dataset">DL3DV</a> and <a href="https://kaldir.vc.in.tum.de/scannetpp/">ScanNet++</a>, and use the evaluation indices released with <a href="https://github.com/ziplab/VolSplat">VolSplat</a>, <a href="https://github.com/cvg/yonosplat">YoNoSplat</a> and <a href="https://github.com/cvg/resplat">ReSplat</a>. We thank the authors of pixelSplat, <a href="https://github.com/donydchen/mvsplat">MVSplat</a>, <a href="https://github.com/xingyoujun/transplat">TranSplat</a>, <a href="https://github.com/cvg/depthsplat">DepthSplat</a>, VolSplat, ReSplat, YoNoSplat and <a href="https://github.com/InternRobotics/AnySplat">AnySplat</a> for releasing the code and weights we compare against. The example scenes are from the RealEstate10K test set.</p>
+    <p>GradSplat builds on <a href="https://github.com/facebookresearch/vggt-omega">VGGT-Ω</a> and <a href="https://github.com/facebookresearch/vggt">VGGT</a>, and rasterizes with <a href="https://github.com/nerfstudio-project/gsplat">gsplat</a>. We train on <a href="https://google.github.io/realestate10k/">RealEstate10K</a> in the format released by <a href="https://github.com/dcharatan/pixelsplat">pixelSplat</a>, evaluate on <a href="https://github.com/DL3DV-10K/Dataset">DL3DV</a> and <a href="https://kaldir.vc.in.tum.de/scannetpp/">ScanNet++</a>, and use the evaluation indices released with <a href="https://github.com/ziplab/VolSplat">VolSplat</a>, <a href="https://github.com/cvg/yonosplat">YoNoSplat</a> and <a href="https://github.com/cvg/resplat">ReSplat</a>. We thank the authors of pixelSplat, <a href="https://github.com/donydchen/mvsplat">MVSplat</a>, <a href="https://github.com/xingyoujun/transplat">TranSplat</a>, <a href="https://github.com/cvg/depthsplat">DepthSplat</a>, VolSplat, ReSplat, YoNoSplat and <a href="https://github.com/InternRobotics/AnySplat">AnySplat</a> for releasing the code and weights we compare against. The scenes shown are from the test sets of RealEstate10K and DL3DV and the validation set of ScanNet++.</p>
   </div>
 </section>
 
@@ -296,7 +269,7 @@
     <div class="columns is-centered">
       <div class="column is-8">
         <div class="content has-text-centered">
-          <p>This website is adapted from the <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> template, licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>. Gaussians are rendered with <a href="https://github.com/mkkellogg/GaussianSplats3D">GaussianSplats3D</a> and <a href="https://threejs.org">three.js</a>.</p>
+          <p>This website is adapted from the <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> template, licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.</p>
         </div>
       </div>
     </div>

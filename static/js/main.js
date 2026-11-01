@@ -1,6 +1,3 @@
-import * as THREE from "three";
-import * as GS from "@mkkellogg/gaussian-splats-3d";
-
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 let SCENES = [];
@@ -31,118 +28,6 @@ function initCarousel() {
     if (e.isIntersecting) videos[cur].play().catch(() => {}); else videos[cur].pause();
   }), {threshold: 0.25}).observe(root);
   go(0);
-}
-
-/* ------------------------------------------------------------------ splat viewer */
-function webgl2() {
-  try { return !!document.createElement("canvas").getContext("webgl2"); } catch (e) { return false; }
-}
-
-async function initExplore() {
-  const box = $("#explore .splat-box");
-  const root = $(".viewer-canvas", box);
-  const status = $(".viewer-status", box);
-  const info = $(".viewer-info", box);
-  let viewer = null, scene = null, state = "ours", token = 0;
-
-  if (!webgl2()) {
-    status.textContent = "This browser has no WebGL 2; the videos above show the same scenes.";
-    return;
-  }
-
-  function applyState() {
-    if (!viewer || viewer.getSceneCount() < 2) return;
-    viewer.getSplatScene(0).visible = state === "pred";
-    viewer.getSplatScene(1).visible = state === "ours";
-    viewer.forceRenderNextFrame();
-    $$(".seg", box).forEach((b) => b.classList.toggle("active", b.dataset.s === state));
-  }
-
-  function resetView() {
-    if (!viewer || !scene) return;
-    const c = viewer.controls;
-    // lift the limits, go back to the first input camera, then keep the view within reach of the input cameras
-    c.minAzimuthAngle = -Infinity; c.maxAzimuthAngle = Infinity; c.minPolarAngle = 0; c.maxPolarAngle = Math.PI;
-    c.minDistance = 0; c.maxDistance = Infinity;
-    viewer.camera.position.set(0, 0, 0);
-    viewer.camera.up.set(0, -1, 0);
-    c.target.set(0, 0, scene.look_depth);
-    viewer.camera.lookAt(0, 0, scene.look_depth);
-    c.update();
-    // per-scene limits (degrees about the look point, from the spread of the input cameras): an orbit by azimuth a
-    // and elevation e moves the controls' angles to (theta0 - a, phi0 + e)
-    const o = scene.orbit, r = Math.PI / 180;
-    const az = c.getAzimuthalAngle(), pol = c.getPolarAngle();
-    c.minAzimuthAngle = az - o.az[1] * r; c.maxAzimuthAngle = az - o.az[0] * r;
-    c.minPolarAngle = pol + o.el[0] * r; c.maxPolarAngle = pol + o.el[1] * r;
-    c.minDistance = o.dist[0] * scene.look_depth; c.maxDistance = o.dist[1] * scene.look_depth;
-    c.enablePan = false;
-    c.update();
-    viewer.forceRenderNextFrame();
-  }
-
-  async function show(i) {
-    const my = ++token;
-    scene = SCENES[i];
-    $$(".splat-picker .scene-card").forEach((c, k) => c.classList.toggle("active", k === i));
-    $("#explore .input-strip").innerHTML = Array.from({length: scene.n_inputs}, (_, k) =>
-      `<figure class="thumb sq"><img src="static/thumbs/${scene.id}_${k}.jpg" alt="input view ${k + 1}"><figcaption>view ${k + 1}</figcaption></figure>`).join("");
-    info.innerHTML = `<div class="vi-title">${scene.title}</div><div class="vi-meta">${scene.dataset} · ${scene.sub} · ${scene.n_inputs} views with cameras · ${scene.n_gaussians.toLocaleString()} Gaussians</div>`;
-    status.hidden = false;
-    status.textContent = "Loading the Gaussians…";
-    if (viewer) { try { await viewer.dispose(); } catch (e) { /* already gone */ } viewer = null; }
-    if (my !== token) return;
-    root.innerHTML = "";
-    // match the horizontal field of view of the (square) input views, so no empty margin shows at the sides
-    const aspect = root.clientWidth / Math.max(1, root.clientHeight);
-    const t = Math.tan(scene.fov_y * Math.PI / 360);
-    const fovY = aspect > 1 ? 2 * Math.atan(t / aspect) * 180 / Math.PI : scene.fov_y;
-    const camera = new THREE.PerspectiveCamera(fovY, aspect, 0.02, 500);
-    camera.up.set(0, -1, 0);
-    viewer = new GS.Viewer({
-      rootElement: root, camera, cameraUp: [0, -1, 0],
-      initialCameraPosition: [0, 0, 0], initialCameraLookAt: [0, 0, scene.look_depth],
-      sharedMemoryForWorkers: false, selfDrivenMode: true, useBuiltInControls: true,
-      sphericalHarmonicsDegree: 0, enableOptionalEffects: true, dynamicScene: false,
-      logLevel: GS.LogLevel ? GS.LogLevel.None : 0,
-    });
-    // The loader sizes its buffer from Content-Length, which a server that gzips .splat files (GitHub Pages does)
-    // reports for the compressed body. Download the files here, where the browser decompresses them, and hand the
-    // loader blob URLs of the exact size.
-    let urls = [];
-    try {
-      urls = await Promise.all(["pred", "ours"].map(async (s) => {
-        const r = await fetch(`static/splats/${scene.id}_${s}.splat`);
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return URL.createObjectURL(await r.blob());
-      }));
-      if (my !== token) { urls.forEach((u) => URL.revokeObjectURL(u)); viewer.dispose(); return; }
-      await viewer.addSplatScenes(urls.map((u) => ({path: u, format: GS.SceneFormat.Splat, splatAlphaRemovalThreshold: 1})), false);
-    } catch (e) {
-      status.textContent = "Could not load the Gaussians: " + e;
-      return;
-    } finally {
-      urls.forEach((u) => URL.revokeObjectURL(u));
-    }
-    if (my !== token) { viewer.dispose(); return; }
-    viewer.start();
-    applyState();
-    resetView();
-    status.hidden = true;
-  }
-
-  $(".splat-picker").innerHTML = SCENES.map((s, i) => `
-    <button class="scene-card" data-i="${i}">
-      <div class="mosaic">${[0, 2, 5].map((k) => `<img src="static/thumbs/${s.id}_${k}.jpg" alt="">`).join("")}</div>
-      <div class="sc-title">${s.title}</div><div class="sc-sub">${s.dataset} · ${s.sub}</div>
-    </button>`).join("");
-  $$(".splat-picker .scene-card").forEach((c) => c.addEventListener("click", () => show(+c.dataset.i)));
-  $$(".seg", box).forEach((b) => b.addEventListener("click", () => { state = b.dataset.s; applyState(); }));
-  $(".btn-reset", box).addEventListener("click", resetView);
-  $(".btn-full", box).addEventListener("click", () => {
-    if (document.fullscreenElement) document.exitFullscreen(); else box.requestFullscreen();
-  });
-  await show(0);
 }
 
 /* ------------------------------------------------------------------ steps */
@@ -312,6 +197,5 @@ function lazyInit(id, fn) {
   initSteps();
   initCopy();
   initTables();
-  lazyInit("explore", initExplore);
   lazyInit("compare", initCompare);
 })();
