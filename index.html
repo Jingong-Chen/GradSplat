@@ -80,23 +80,43 @@
       <div class="carousel" id="video-carousel">
         <div class="carousel-window"><div class="carousel-track">
           <div class="carousel-item">
-            <video muted loop playsinline preload="auto" poster="static/video/teaser_dining_room_poster.jpg"><source src="static/video/teaser_dining_room.mp4" type="video/mp4"></video>
-            <p class="carousel-label">Dining room · narrow protocol</p>
+            <video muted loop playsinline preload="auto" poster="static/video/teaser_temple_poster.jpg"><source src="static/video/teaser_temple.mp4" type="video/mp4"></video>
+            <p class="carousel-label">Temple guardians · DL3DV, zero-shot</p>
           </div>
           <div class="carousel-item">
-            <video muted loop playsinline preload="metadata" poster="static/video/teaser_rock_poster.jpg"><source src="static/video/teaser_rock.mp4" type="video/mp4"></video>
-            <p class="carousel-label">Sculpture · narrow protocol</p>
+            <video muted loop playsinline preload="metadata" poster="static/video/teaser_billiard_room_poster.jpg"><source src="static/video/teaser_billiard_room.mp4" type="video/mp4"></video>
+            <p class="carousel-label">Billiard room · RealEstate10K, narrow protocol</p>
           </div>
           <div class="carousel-item">
-            <video muted loop playsinline preload="metadata" poster="static/video/teaser_bathroom_poster.jpg"><source src="static/video/teaser_bathroom.mp4" type="video/mp4"></video>
-            <p class="carousel-label">Bathroom to bedroom · wide protocol</p>
+            <video muted loop playsinline preload="metadata" poster="static/video/teaser_reading_room_poster.jpg"><source src="static/video/teaser_reading_room.mp4" type="video/mp4"></video>
+            <p class="carousel-label">Reading room · DL3DV, zero-shot</p>
+          </div>
+          <div class="carousel-item">
+            <video muted loop playsinline preload="metadata" poster="static/video/teaser_hillside_poster.jpg"><source src="static/video/teaser_hillside.mp4" type="video/mp4"></video>
+            <p class="carousel-label">Hillside estate · RealEstate10K, wide protocol</p>
+          </div>
+          <div class="carousel-item">
+            <video muted loop playsinline preload="metadata" poster="static/video/teaser_kitchen_poster.jpg"><source src="static/video/teaser_kitchen.mp4" type="video/mp4"></video>
+            <p class="carousel-label">Kitchen · RealEstate10K, 12 input views</p>
+          </div>
+          <div class="carousel-item">
+            <video muted loop playsinline preload="metadata" poster="static/video/teaser_courtyard_poster.jpg"><source src="static/video/teaser_courtyard.mp4" type="video/mp4"></video>
+            <p class="carousel-label">Statue courtyard · DL3DV, zero-shot</p>
+          </div>
+          <div class="carousel-item">
+            <video muted loop playsinline preload="metadata" poster="static/video/teaser_paint_store_poster.jpg"><source src="static/video/teaser_paint_store.mp4" type="video/mp4"></video>
+            <p class="carousel-label">Paint store · DL3DV, zero-shot</p>
+          </div>
+          <div class="carousel-item">
+            <video muted loop playsinline preload="metadata" poster="static/video/teaser_dorm_poster.jpg"><source src="static/video/teaser_dorm.mp4" type="video/mp4"></video>
+            <p class="carousel-label">Dorm room · ScanNet++, zero-shot</p>
           </div>
         </div></div>
         <button class="carousel-nav prev" aria-label="previous video"><i class="fas fa-chevron-left"></i></button>
         <button class="carousel-nav next" aria-label="next video"><i class="fas fa-chevron-right"></i></button>
         <div class="carousel-dots"></div>
       </div>
-      <p class="caption">Six input views of RealEstate10K test scenes, rendered along a path through the input cameras. Left: the Gaussians as the network predicts them in one pass. Right: GradSplat, after the gradient steps on the input views that the model takes inside the same forward pass.</p>
+      <p class="caption">Test scenes rendered along a path through their input cameras, from six input views unless marked. Left: the Gaussians as the network predicts them in one pass. Right: GradSplat, after the gradient steps on the input views that the model takes inside the same forward pass. DL3DV and ScanNet++ scenes use the RealEstate10K weights without fine-tuning.</p>
     </div>
   </div>
 </section>
@@ -163,7 +183,7 @@
 <section class="section" id="explore">
   <div class="container is-max-desktop">
     <h2 class="title is-3 has-text-centered">Explore the 3D Gaussians</h2>
-    <p class="lead">The 3D Gaussians of the released model for three RealEstate10K test scenes, from six input views with their cameras, rendered live in your browser. Switch between the Gaussians as predicted once and after GradSplat's gradient steps; the view starts at the first input camera. Drag to orbit, right-drag to pan, scroll to zoom.</p>
+    <p class="lead">The 3D Gaussians of the released model for test scenes of RealEstate10K, DL3DV and ScanNet++, from six input views with their cameras, rendered live in your browser; DL3DV and ScanNet++ use the RealEstate10K weights without fine-tuning. Switch between the Gaussians as predicted once and after GradSplat's gradient steps; the view starts at the first input camera. Drag to orbit and scroll to zoom.</p>
     <div class="viewer-box splat-box">
       <div class="viewer-canvas"></div>
       <div class="viewer-status">Loading…</div>
@@ -180,6 +200,25 @@
     <div class="input-strip"></div>
     <div class="scene-picker splat-picker"></div>
     <p class="small-note">Every input pixel carries one Gaussian (301,056 per scene), predicted from views of 224 × 224 pixels. In the browser the colors are rendered without the view-dependent part of the spherical harmonics, and rotations are stored with 8 bits per component.</p>
+  </div>
+</section>
+
+<section class="section" id="compare">
+  <div class="container is-max-widescreen">
+    <h2 class="title is-3 has-text-centered">Same Views, Every Method</h2>
+    <p class="lead">The target views of the evaluation as every method renders them, at 224 × 224 pixels, the resolution of the evaluation. Pick a method above each image; scroll to zoom, drag to pan and double-click to reset, and the two images move together. The PSNR is that of the shown view. Scenes are chosen for a visible difference.</p>
+    <div class="seg-row cmp-tabs"></div>
+    <p class="small-note cmp-caption"></p>
+    <div class="cmp-row-label">Scenes</div>
+    <div class="thumb-row cmp-scenes"></div>
+    <div class="seg-row cmp-views"></div>
+    <div class="cmp-inputs"></div>
+    <div class="cmp-targets"></div>
+    <div class="cmp-grid">
+      <div class="cmp-pane"><div class="method-buttons"></div><div class="cmp-img"><img alt="rendering of the selected method"><div class="cmp-badge"></div></div></div>
+      <div class="cmp-pane"><div class="method-buttons"></div><div class="cmp-img"><img alt="rendering of the selected method"><div class="cmp-badge"></div></div></div>
+    </div>
+    <div class="cmp-tools"><button class="chip small btn-cmp-reset"><i class="fas fa-magnifying-glass-minus"></i>&nbsp; Reset zoom</button></div>
   </div>
 </section>
 

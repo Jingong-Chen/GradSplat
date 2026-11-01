@@ -60,11 +60,24 @@ async function initExplore() {
 
   function resetView() {
     if (!viewer || !scene) return;
+    const c = viewer.controls;
+    // lift the limits, go back to the first input camera, then keep the view within reach of the input cameras
+    c.minAzimuthAngle = -Infinity; c.maxAzimuthAngle = Infinity; c.minPolarAngle = 0; c.maxPolarAngle = Math.PI;
+    c.minDistance = 0; c.maxDistance = Infinity;
     viewer.camera.position.set(0, 0, 0);
     viewer.camera.up.set(0, -1, 0);
-    viewer.controls.target.set(0, 0, scene.look_depth);
+    c.target.set(0, 0, scene.look_depth);
     viewer.camera.lookAt(0, 0, scene.look_depth);
-    viewer.controls.update();
+    c.update();
+    // per-scene limits (degrees about the look point, from the spread of the input cameras): an orbit by azimuth a
+    // and elevation e moves the controls' angles to (theta0 - a, phi0 + e)
+    const o = scene.orbit, r = Math.PI / 180;
+    const az = c.getAzimuthalAngle(), pol = c.getPolarAngle();
+    c.minAzimuthAngle = az - o.az[1] * r; c.maxAzimuthAngle = az - o.az[0] * r;
+    c.minPolarAngle = pol + o.el[0] * r; c.maxPolarAngle = pol + o.el[1] * r;
+    c.minDistance = o.dist[0] * scene.look_depth; c.maxDistance = o.dist[1] * scene.look_depth;
+    c.enablePan = false;
+    c.update();
     viewer.forceRenderNextFrame();
   }
 
@@ -74,7 +87,7 @@ async function initExplore() {
     $$(".splat-picker .scene-card").forEach((c, k) => c.classList.toggle("active", k === i));
     $("#explore .input-strip").innerHTML = Array.from({length: scene.n_inputs}, (_, k) =>
       `<figure class="thumb sq"><img src="static/thumbs/${scene.id}_${k}.jpg" alt="input view ${k + 1}"><figcaption>view ${k + 1}</figcaption></figure>`).join("");
-    info.innerHTML = `<div class="vi-title">${scene.title}</div><div class="vi-meta">RealEstate10K test scene · ${scene.sub} · ${scene.n_inputs} views with cameras · ${scene.n_gaussians.toLocaleString()} Gaussians</div>`;
+    info.innerHTML = `<div class="vi-title">${scene.title}</div><div class="vi-meta">${scene.dataset} · ${scene.sub} · ${scene.n_inputs} views with cameras · ${scene.n_gaussians.toLocaleString()} Gaussians</div>`;
     status.hidden = false;
     status.textContent = "Loading the Gaussians…";
     if (viewer) { try { await viewer.dispose(); } catch (e) { /* already gone */ } viewer = null; }
@@ -121,7 +134,7 @@ async function initExplore() {
   $(".splat-picker").innerHTML = SCENES.map((s, i) => `
     <button class="scene-card" data-i="${i}">
       <div class="mosaic">${[0, 2, 5].map((k) => `<img src="static/thumbs/${s.id}_${k}.jpg" alt="">`).join("")}</div>
-      <div class="sc-title">${s.title}</div><div class="sc-sub">${s.sub}</div>
+      <div class="sc-title">${s.title}</div><div class="sc-sub">${s.dataset} · ${s.sub}</div>
     </button>`).join("");
   $$(".splat-picker .scene-card").forEach((c) => c.addEventListener("click", () => show(+c.dataset.i)));
   $$(".seg", box).forEach((b) => b.addEventListener("click", () => { state = b.dataset.s; applyState(); }));
@@ -151,7 +164,7 @@ function initSteps() {
     $$(".steps-chips .chip").forEach((c, k) => c.classList.toggle("active", k === i));
     const s = SCENES[i];
     gt.src = `static/steps/${s.id}_gt.jpg`;
-    $(".steps-note").textContent = `${s.title}: target view ${s.target_view + 1} of 8 of the ${s.sub}, the target whose PSNR rises the most from the prediction to the output. Pictures are rendered at 448 × 448 pixels.`;
+    $(".steps-note").textContent = `${s.title} (${s.dataset}, ${s.sub}): target view ${s.target_view + 1} of ${s.n_targets}, the target whose PSNR rises the most from the prediction to the output. Pictures are rendered at 448 × 448 pixels.`;
     draw();
   }
 
@@ -165,6 +178,116 @@ function initSteps() {
 async function initTables() {
   $("#table1").innerHTML = await (await fetch("static/data/table1.html")).text();
   $("#table2").innerHTML = await (await fetch("static/data/table2.html")).text();
+}
+
+/* ------------------------------------------------------------------ method comparison */
+async function initCompare() {
+  const root = $("#compare");
+  const DATA = await (await fetch("static/data/compare.json")).json();
+  const panes = $$(".cmp-pane", root).map((el) => ({el, img: $(".cmp-img img", el), badge: $(".cmp-badge", el), method: null}));
+  const view = {s: 1, x: 0, y: 0};
+  let set = null, scene = null, target = 0, V = 42;
+
+  const base = () => `static/compare/${set.id}/${scene.id}`;
+  const psnrOf = (m) => (set.views ? scene.psnr[V][m] : scene.psnr[m]);
+  const file = (m) => (m === "gt" ? `${base()}/gt_${target}.jpg` : `${base()}/${m}${set.views ? `_v${V}` : ""}_${target}.jpg`);
+
+  function applyView() {
+    panes.forEach((p) => { p.img.style.transform = `translate(${view.x}px, ${view.y}px) scale(${view.s})`; });
+  }
+  function resetView() { view.s = 1; view.x = 0; view.y = 0; applyView(); }
+
+  function drawPane(p) {
+    $$(".mbtn", p.el).forEach((b) => b.classList.toggle("active", b.dataset.m === p.method));
+    p.img.src = file(p.method);
+    const label = set.methods.find((m) => m.key === p.method).label;
+    p.badge.innerHTML = p.method === "gt" ? "Ground truth"
+      : `${label} · ${p.method === "ours" ? `<b>${psnrOf(p.method)[target].toFixed(2)} dB</b>` : `${psnrOf(p.method)[target].toFixed(2)} dB`}`;
+  }
+  function drawAll() { panes.forEach(drawPane); }
+
+  function pickTarget(t) {
+    target = t;
+    $$(".cmp-targets .thumb-btn", root).forEach((b, k) => b.classList.toggle("active", k === t));
+    drawAll();
+  }
+
+  function pickV(v) {
+    V = v;
+    $$(".cmp-views .chip", root).forEach((b) => b.classList.toggle("active", +b.dataset.v === v));
+    $(".cmp-inputs", root).innerHTML = `<div class="cmp-row-label">${v} input views</div><img src="${base()}/inputs_v${v}.jpg" alt="input views">`;
+    drawAll();
+  }
+
+  function pickScene(i) {
+    scene = set.scenes[i];
+    $$(".cmp-scenes .thumb-btn", root).forEach((b, k) => b.classList.toggle("active", k === i));
+    panes[0].method = scene.left;
+    panes[1].method = "ours";
+    $(".cmp-targets", root).innerHTML = `<div class="cmp-row-label">Target views (ground truth); the model never sees them</div>` +
+      `<div class="thumb-row">${Array.from({length: scene.n_targets}, (_, t) =>
+        `<button class="thumb-btn small" title="target view ${t + 1}"><img src="static/compare/${set.id}/${scene.id}/gt_${t}.jpg" alt="target ${t + 1}" loading="lazy"></button>`).join("")}</div>`;
+    $$(".cmp-targets .thumb-btn", root).forEach((b, k) => b.addEventListener("click", () => pickTarget(k)));
+    if (set.views) {
+      pickV(V);
+    } else {
+      $(".cmp-inputs", root).innerHTML = `<div class="cmp-row-label">${scene.n_inputs} input views</div><img src="${base()}/inputs.jpg" alt="input views">`;
+    }
+    resetView();
+    pickTarget(scene.target);
+  }
+
+  function pickSet(id) {
+    set = DATA.settings.find((s) => s.id === id);
+    $$(".cmp-tabs .chip", root).forEach((b) => b.classList.toggle("active", b.dataset.s === id));
+    $(".cmp-caption", root).textContent = set.caption;
+    panes.forEach((p) => {
+      $(".method-buttons", p.el).innerHTML = set.methods.map((m) =>
+        `<button class="mbtn${m.key === "ours" || m.key === "ours_ft" ? " ours" : ""}${m.key === "gt" ? " gt" : ""}" data-m="${m.key}">${m.label}</button>`).join("");
+      $$(".mbtn", p.el).forEach((b) => b.addEventListener("click", () => { p.method = b.dataset.m; drawPane(p); }));
+    });
+    $(".cmp-views", root).innerHTML = set.views ? set.views.map((v) =>
+      `<button class="chip small" data-v="${v}">V = ${v}</button>`).join("") : "";
+    $$(".cmp-views .chip", root).forEach((b) => b.addEventListener("click", () => pickV(+b.dataset.v)));
+    $(".cmp-scenes", root).innerHTML = set.scenes.map((sc, i) =>
+      `<button class="thumb-btn" title="scene ${i + 1}"><img src="static/compare/${set.id}/${sc.id}/gt_${sc.target}.jpg" alt="scene ${i + 1}" loading="lazy"></button>`).join("");
+    $$(".cmp-scenes .thumb-btn", root).forEach((b, k) => b.addEventListener("click", () => pickScene(k)));
+    pickScene(0);
+  }
+
+  // one zoom and pan for both images: scroll to zoom about the cursor, drag to pan, double-click to reset
+  $$(".cmp-img", root).forEach((box) => {
+    box.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      const r = box.getBoundingClientRect();
+      const cx = e.clientX - r.left, cy = e.clientY - r.top;
+      const s = Math.min(8, Math.max(1, view.s * (e.deltaY < 0 ? 1.15 : 1 / 1.15)));
+      view.x = cx - (cx - view.x) * (s / view.s);
+      view.y = cy - (cy - view.y) * (s / view.s);
+      view.s = s;
+      clamp(r.width);
+      applyView();
+    }, {passive: false});
+    let drag = null;
+    box.addEventListener("pointerdown", (e) => { drag = {x: e.clientX - view.x, y: e.clientY - view.y}; box.setPointerCapture(e.pointerId); });
+    box.addEventListener("pointermove", (e) => {
+      if (!drag) return;
+      view.x = e.clientX - drag.x; view.y = e.clientY - drag.y;
+      clamp(box.getBoundingClientRect().width);
+      applyView();
+    });
+    box.addEventListener("pointerup", () => { drag = null; });
+    box.addEventListener("dblclick", resetView);
+  });
+  function clamp(w) {
+    view.x = Math.min(0, Math.max(w - w * view.s, view.x));
+    view.y = Math.min(0, Math.max(w - w * view.s, view.y));
+  }
+  $(".btn-cmp-reset", root).addEventListener("click", resetView);
+
+  $(".cmp-tabs", root).innerHTML = DATA.settings.map((s) => `<button class="chip" data-s="${s.id}">${s.label}</button>`).join("");
+  $$(".cmp-tabs .chip", root).forEach((b) => b.addEventListener("click", () => pickSet(b.dataset.s)));
+  pickSet(DATA.settings[0].id);
 }
 
 function initCopy() {
@@ -190,4 +313,5 @@ function lazyInit(id, fn) {
   initCopy();
   initTables();
   lazyInit("explore", initExplore);
+  lazyInit("compare", initCompare);
 })();

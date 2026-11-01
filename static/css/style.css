@@ -84,7 +84,7 @@ img.figure.mt-figure { margin-top: 2.2rem; }
 
 /* ---------------------------------------------------------------- 3D viewer */
 .viewer-box { position: relative; width: 100%; overflow: hidden; border: 1px solid var(--line); border-radius: 6px; }
-.splat-box { aspect-ratio: 1 / 1; max-width: min(720px, 78vh); margin: 0 auto; background: #0f1115; }
+.splat-box { aspect-ratio: 1 / 1; max-width: min(520px, 70vh); margin: 0 auto; background: #0f1115; }
 .viewer-box:fullscreen { max-width: none; border-radius: 0; }
 .viewer-canvas { position: absolute; inset: 0; cursor: grab; }
 .viewer-canvas:active { cursor: grabbing; }
@@ -119,7 +119,7 @@ img.figure.mt-figure { margin-top: 2.2rem; }
 .thumb { margin: 0; flex: 0 0 auto; width: 92px; text-align: center; }
 .thumb.sq img { width: 92px; height: 92px; object-fit: cover; border-radius: 4px; display: block; }
 .thumb figcaption { font-size: 0.72rem; color: var(--ink-3); margin-top: 3px; }
-.scene-picker { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; max-width: 720px; margin: 12px auto 0; }
+.scene-picker { display: grid; grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); gap: 8px; max-width: 960px; margin: 12px auto 0; }
 .scene-card {
   text-align: left; border: 1px solid var(--line); background: #fff; border-radius: 6px; padding: 7px; cursor: pointer;
   font: inherit; color: inherit; transition: border-color 0.15s ease, box-shadow 0.15s ease;
@@ -173,6 +173,50 @@ table.res tbody tr:last-child td { border-bottom: 0; }
   .viewer-info { max-width: calc(100% - 24px); top: auto; bottom: 58px; }
 }
 @media (max-width: 520px) {
-  .scene-picker { grid-template-columns: minmax(0, 1fr); }
+  .scene-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .seg { padding: 6px 10px; font-size: 0.84rem; }
+}
+
+/* ---------------------------------------------------------------- method comparison */
+.seg-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 0.8rem; }
+.seg-row .chip.small { padding: 3px 12px; font-size: 0.88rem; }
+.cmp-caption { margin: 0 auto 0.9rem; max-width: 860px; }
+.thumb-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 0.9rem; }
+.thumb-btn {
+  border: 2px solid transparent; padding: 0; background: none; cursor: pointer; border-radius: 5px; line-height: 0;
+  opacity: 0.72; transition: opacity 0.15s ease, border-color 0.15s ease;
+}
+.thumb-btn img { width: 64px; height: 64px; object-fit: cover; border-radius: 3px; }
+.thumb-btn.small img { width: 44px; height: 44px; }
+.thumb-btn:hover { opacity: 1; }
+.thumb-btn.active { border-color: #363636; opacity: 1; }
+.cmp-row-label { text-align: center; font-size: 0.8rem; color: var(--ink-3); margin-bottom: 0.3rem; font-family: "Google Sans", sans-serif; }
+.cmp-inputs { text-align: center; margin-bottom: 0.9rem; }
+.cmp-inputs img { max-height: 120px; max-width: 100%; border-radius: 3px; }
+.cmp-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; max-width: 860px; margin: 0 auto; }
+.method-buttons { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-bottom: 8px; }
+.mbtn {
+  border: 1px solid #dbdbdb; background: #fff; border-radius: 4px; padding: 2px 8px; font-size: 0.82rem; cursor: pointer;
+  color: var(--ink-2); font-family: "Google Sans", "Noto Sans", sans-serif;
+}
+.mbtn:hover { border-color: #b5b5b5; color: #000; }
+.mbtn.active { background: #363636; color: #fff; border-color: #363636; }
+.mbtn.ours.active { background: var(--ours); border-color: var(--ours); }
+.mbtn.gt { font-style: italic; }
+.cmp-img {
+  position: relative; width: 100%; aspect-ratio: 1 / 1; overflow: hidden; border-radius: 4px; background: #f0f0f0;
+  cursor: grab; touch-action: none; user-select: none;
+}
+.cmp-img:active { cursor: grabbing; }
+.cmp-img img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; transform-origin: 0 0; pointer-events: none; }
+.cmp-badge {
+  position: absolute; left: 8px; bottom: 8px; background: rgba(255, 255, 255, 0.92); border-radius: 4px; padding: 2px 8px;
+  font-size: 0.85rem; color: var(--ink); font-family: "Google Sans", sans-serif; font-variant-numeric: tabular-nums;
+}
+.cmp-badge b { color: var(--ours); }
+.cmp-tools { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
+@media (max-width: 768px) {
+  .cmp-grid { gap: 8px; }
+  .mbtn { font-size: 0.74rem; padding: 2px 5px; }
+  .thumb-btn img { width: 48px; height: 48px; }
 }

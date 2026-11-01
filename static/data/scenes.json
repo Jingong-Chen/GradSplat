@@ -1,11 +1,27 @@
 [
  {
-  "id": "dining_room",
-  "key": "18502a6651367e71",
-  "title": "Dining room",
+  "id": "billiard_room",
+  "key": "d9de8aabf76c7683",
+  "dataset": "RealEstate10K",
+  "title": "Billiard room",
   "sub": "narrow protocol",
   "index": "re10k_narrow_volsplat.json",
-  "target_view": 6,
+  "orbit": {
+   "az": [
+    -6.0,
+    6.4
+   ],
+   "el": [
+    -6.0,
+    6.0
+   ],
+   "dist": [
+    0.75,
+    1.02
+   ]
+  },
+  "target_view": 7,
+  "n_targets": 8,
   "n_inputs": 6,
   "n_gaussians": 301056,
   "steps": [
@@ -20,60 +36,42 @@
    "shape 5"
   ],
   "target_psnr": [
-   18.58,
-   27.21,
-   29.35,
-   27.93,
-   30.57,
-   30.98,
-   31.39,
-   31.56,
-   31.66
+   31.81,
+   35.96,
+   36.29,
+   36.58,
+   37.56,
+   38.23,
+   38.55,
+   38.8,
+   38.97
   ],
-  "look_depth": 7.1733,
-  "fov_y": 58.82
+  "look_depth": 1.1216,
+  "fov_y": 58.68
  },
  {
-  "id": "rock",
-  "key": "64fe38ce3160d0fb",
-  "title": "Sculpture",
-  "sub": "narrow protocol",
-  "index": "re10k_narrow_volsplat.json",
-  "target_view": 0,
-  "n_inputs": 6,
-  "n_gaussians": 301056,
-  "steps": [
-   "prediction",
-   "appearance 1",
-   "appearance 2",
-   "appearance 3",
-   "shape 1",
-   "shape 2",
-   "shape 3",
-   "shape 4",
-   "shape 5"
-  ],
-  "target_psnr": [
-   24.03,
-   25.92,
-   25.86,
-   25.89,
-   27.01,
-   27.46,
-   27.77,
-   27.93,
-   28.08
-  ],
-  "look_depth": 2.4027,
-  "fov_y": 57.99
- },
- {
-  "id": "bathroom",
-  "key": "5e76b1824c7ecb1f",
-  "title": "Bathroom to bedroom",
+  "id": "hillside",
+  "key": "c2e81ece6a48abb0",
+  "dataset": "RealEstate10K",
+  "title": "Hillside estate",
   "sub": "wide protocol",
   "index": "re10k_wide_yonosplat.json",
-  "target_view": 4,
+  "orbit": {
+   "az": [
+    -6.0,
+    6.0
+   ],
+   "el": [
+    -6.0,
+    8.7
+   ],
+   "dist": [
+    0.75,
+    1.02
+   ]
+  },
+  "target_view": 7,
+  "n_targets": 8,
   "n_inputs": 6,
   "n_gaussians": 301056,
   "steps": [
@@ -88,17 +86,267 @@
    "shape 5"
   ],
   "target_psnr": [
-   26.97,
-   27.73,
-   27.78,
-   27.64,
-   29.69,
-   30.27,
-   30.48,
-   30.64,
-   30.71
+   30.15,
+   31.71,
+   32.36,
+   32.24,
+   33.54,
+   33.86,
+   34.03,
+   34.15,
+   34.23
   ],
-  "look_depth": 3.0211,
-  "fov_y": 58.9
+  "look_depth": 2.1822,
+  "fov_y": 54.01
+ },
+ {
+  "id": "kitchen",
+  "key": "01497290d8b93a9b",
+  "dataset": "RealEstate10K",
+  "title": "Kitchen",
+  "sub": "12 input views",
+  "index": "re10k_views_12.json",
+  "orbit": {
+   "az": [
+    -6.0,
+    6.0
+   ],
+   "el": [
+    -6.0,
+    6.0
+   ],
+   "dist": [
+    0.75,
+    1.02
+   ]
+  },
+  "target_view": 7,
+  "n_targets": 8,
+  "n_inputs": 12,
+  "n_gaussians": 602112,
+  "steps": [
+   "prediction",
+   "appearance 1",
+   "appearance 2",
+   "appearance 3",
+   "shape 1",
+   "shape 2",
+   "shape 3",
+   "shape 4",
+   "shape 5"
+  ],
+  "target_psnr": [
+   37.85,
+   40.57,
+   40.33,
+   39.18,
+   41.67,
+   42.32,
+   42.5,
+   42.65,
+   42.73
+  ],
+  "look_depth": 2.3461,
+  "fov_y": 60.11
+ },
+ {
+  "id": "reading_room",
+  "key": "2cbfe28643b6636f9c70813cae7625aa858a352109493ac70fb429ce94dd55b3",
+  "dataset": "DL3DV",
+  "title": "Reading room",
+  "sub": "zero-shot",
+  "index": "dl3dv_resplat.json",
+  "orbit": {
+   "az": [
+    -6.0,
+    25.0
+   ],
+   "el": [
+    -9.3,
+    6.0
+   ],
+   "dist": [
+    0.75,
+    1.02
+   ]
+  },
+  "target_view": 7,
+  "n_targets": 8,
+  "n_inputs": 6,
+  "n_gaussians": 301056,
+  "steps": [
+   "prediction",
+   "appearance 1",
+   "appearance 2",
+   "appearance 3",
+   "shape 1",
+   "shape 2",
+   "shape 3",
+   "shape 4",
+   "shape 5"
+  ],
+  "target_psnr": [
+   17.92,
+   29.01,
+   31.54,
+   29.72,
+   33.27,
+   34.59,
+   35.15,
+   35.55,
+   35.81
+  ],
+  "look_depth": 5.7556,
+  "fov_y": 63.94
+ },
+ {
+  "id": "temple",
+  "key": "1de58be515696102c364b767f296600ffff853d4145a60dd30ece9d935317654",
+  "dataset": "DL3DV",
+  "title": "Temple guardians",
+  "sub": "zero-shot",
+  "index": "dl3dv_resplat.json",
+  "orbit": {
+   "az": [
+    -25.0,
+    6.0
+   ],
+   "el": [
+    -6.0,
+    6.1
+   ],
+   "dist": [
+    0.75,
+    1.02
+   ]
+  },
+  "target_view": 5,
+  "n_targets": 8,
+  "n_inputs": 6,
+  "n_gaussians": 301056,
+  "steps": [
+   "prediction",
+   "appearance 1",
+   "appearance 2",
+   "appearance 3",
+   "shape 1",
+   "shape 2",
+   "shape 3",
+   "shape 4",
+   "shape 5"
+  ],
+  "target_psnr": [
+   15.12,
+   24.31,
+   30.33,
+   28.01,
+   30.51,
+   32.66,
+   33.34,
+   33.62,
+   33.84
+  ],
+  "look_depth": 10.0234,
+  "fov_y": 65.33
+ },
+ {
+  "id": "courtyard",
+  "key": "ba55c875d20c34ee85ffc72264c4d77710852e5fb7d9ce4b9c26a8442850e98f",
+  "dataset": "DL3DV",
+  "title": "Statue courtyard",
+  "sub": "zero-shot",
+  "index": "dl3dv_resplat.json",
+  "orbit": {
+   "az": [
+    -6.0,
+    25.0
+   ],
+   "el": [
+    -6.0,
+    6.0
+   ],
+   "dist": [
+    0.75,
+    1.02
+   ]
+  },
+  "target_view": 7,
+  "n_targets": 8,
+  "n_inputs": 6,
+  "n_gaussians": 301056,
+  "steps": [
+   "prediction",
+   "appearance 1",
+   "appearance 2",
+   "appearance 3",
+   "shape 1",
+   "shape 2",
+   "shape 3",
+   "shape 4",
+   "shape 5"
+  ],
+  "target_psnr": [
+   19.89,
+   27.01,
+   28.01,
+   26.5,
+   29.67,
+   30.49,
+   30.88,
+   31.15,
+   31.28
+  ],
+  "look_depth": 5.6987,
+  "fov_y": 65.43
+ },
+ {
+  "id": "dorm",
+  "key": "c49a8c6cff",
+  "dataset": "ScanNet++",
+  "title": "Dorm room",
+  "sub": "zero-shot",
+  "index": "scannetpp_val.json",
+  "orbit": {
+   "az": [
+    -23.0,
+    6.0
+   ],
+   "el": [
+    -6.0,
+    7.5
+   ],
+   "dist": [
+    0.75,
+    1.02
+   ]
+  },
+  "target_view": 0,
+  "n_targets": 3,
+  "n_inputs": 6,
+  "n_gaussians": 301056,
+  "steps": [
+   "prediction",
+   "appearance 1",
+   "appearance 2",
+   "appearance 3",
+   "shape 1",
+   "shape 2",
+   "shape 3",
+   "shape 4",
+   "shape 5"
+  ],
+  "target_psnr": [
+   20.79,
+   22.01,
+   21.91,
+   21.52,
+   25.31,
+   27.68,
+   28.74,
+   29.18,
+   29.65
+  ],
+  "look_depth": 1.1965,
+  "fov_y": 102.96
  }
 ]
