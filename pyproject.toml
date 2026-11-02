@@ -8,7 +8,7 @@ version = "1.0.0"
 description = "GradSplat: gradients inside the forward pass for feed-forward 3D Gaussian Splatting"
 readme = "README.md"
 requires-python = ">=3.10"
-license = {file = "LICENSE"}
+license = {text = "MIT AND LicenseRef-FAIR-Noncommercial-Research-License"}
 authors = [
     {name = "Jingong Chen"}, {name = "Linlian Jiang"}, {name = "Guangyuan Li"}, {name = "Xinxin Zuo"},
     {name = "Yang Wang"}, {name = "Chulwoo Pack"}, {name = "Kyle Gao"}, {name = "Kwanghee Won"},
@@ -44,3 +44,6 @@ Weights = "https://huggingface.co/Jingong/GradSplat"
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["gradsplat*"]
+
+[tool.setuptools.package-data]
+"gradsplat._vggt_omega" = ["LICENSE", "LICENSE_DINOv3.md"]

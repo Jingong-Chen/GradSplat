@@ -1,9 +1,8 @@
 # Copyright (c) 2026 The GradSplat Authors.
-# Portions adapted from VGGT-Omega (Copyright (c) Meta Platforms, Inc. and affiliates,
-# FAIR Noncommercial Research License).
+# Portions adapted from VGGT-Omega (Copyright (c) Meta Platforms, Inc. and affiliates).
 #
-# This source code is licensed under the license found in the LICENSE file in the root directory
-# of this source tree.
+# This source code is licensed under the FAIR Noncommercial Research License of VGGT-Omega, found in
+# gradsplat/_vggt_omega/LICENSE.
 
 """Dense head with a Gaussian branch, and the shape head of the log-anisotropy correction."""
 import torch

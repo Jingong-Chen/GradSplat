@@ -7,11 +7,14 @@ the released weights.
 
 GradSplat's backbone, camera head and dense head are those of VGGT-Ω, and the GradSplat weights are trained from the
 VGGT-Ω weights. The code in `gradsplat/_vggt_omega/` is a copy of the VGGT-Ω inference package (imports renamed,
-otherwise unchanged), and `gradsplat/heads.py` extends its dense head.
+otherwise unchanged), `gradsplat/heads.py` extends its dense head and `gradsplat/model.py` follows its forward pass.
 
 Copyright (c) Meta Platforms, Inc. and affiliates. Licensed under the FAIR Noncommercial Research License, a copy of
-which is provided in [`LICENSE`](LICENSE). Under that license this repository, the GradSplat weights and any derivative
-of them are distributed under the same terms, for noncommercial research use only.
+which is provided in [`gradsplat/_vggt_omega/LICENSE`](gradsplat/_vggt_omega/LICENSE). As that license requires, the
+code in `gradsplat/_vggt_omega/`, `gradsplat/heads.py` and `gradsplat/model.py`, the GradSplat weights and any
+derivative of them are distributed under the same terms, for noncommercial research use only. The files of
+`gradsplat/_vggt_omega/models/layers/` that carry the notice of the DINOv3 License are also subject to that license, a
+copy of which is provided in [`gradsplat/_vggt_omega/LICENSE_DINOv3.md`](gradsplat/_vggt_omega/LICENSE_DINOv3.md).
 
 ## Evaluation indices
 
@@ -22,8 +25,8 @@ The files in `assets/indices/` list, for every scene, the input and target frame
 | `re10k_narrow_volsplat.json` | the RealEstate10K index released with [VolSplat](https://github.com/ziplab/VolSplat) | MIT, Copyright (c) 2025 Zhuang Intelligent Processing Lab |
 | `re10k_wide_yonosplat.json` | the RealEstate10K index released with [YoNoSplat](https://github.com/cvg/yonosplat) | MIT, Copyright (c) 2026 Botao Ye |
 | `dl3dv_resplat.json` | `dl3dv_start_0_distance_60_ctx_6v_tgt_8v.json` of [ReSplat](https://github.com/cvg/resplat) | MIT, Copyright (c) 2026 Haofei Xu |
-| `re10k_views_*.json` | built in this work from the scenes and targets of the narrow index | as this repository |
-| `scannetpp_val.json` | built in this work (`eval/prepare_scannetpp.py`) | as this repository |
+| `re10k_views_*.json` | built in this work from the scenes and targets of the narrow index | MIT, as the GradSplat code |
+| `scannetpp_val.json` | built in this work (`eval/prepare_scannetpp.py`) | MIT, as the GradSplat code |
 
 The MIT License of these repositories reads:
 

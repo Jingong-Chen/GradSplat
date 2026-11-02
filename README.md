@@ -8,7 +8,7 @@
 <sup>4</sup>Mila – Quebec AI Institute &nbsp; <sup>5</sup>ELLIS Institute Finland<br>
 <sup>†</sup>Equal contribution &nbsp; <sup>*</sup>Corresponding author
 
-<a href="https://jingong-chen.github.io/GradSplat/"><img src="https://img.shields.io/badge/Project-Page-4b6bfb?logo=googlechrome&logoColor=white" alt="Project Page"></a> <a href="https://arxiv.org/abs/2610.38951"><img src="https://img.shields.io/badge/arXiv-2610.38951-b31b1b?logo=arxiv&logoColor=white" alt="arXiv"></a> <a href="https://huggingface.co/Jingong/GradSplat"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model-ffc107" alt="Hugging Face"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/License-FAIR%20Noncommercial-6c757d" alt="License"></a>
+<a href="https://jingong-chen.github.io/GradSplat/"><img src="https://img.shields.io/badge/Project-Page-4b6bfb?logo=googlechrome&logoColor=white" alt="Project Page"></a> <a href="https://arxiv.org/abs/2610.38951"><img src="https://img.shields.io/badge/arXiv-2610.38951-b31b1b?logo=arxiv&logoColor=white" alt="arXiv"></a> <a href="https://huggingface.co/Jingong/GradSplat"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model-ffc107" alt="Hugging Face"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/Code-MIT-6c757d" alt="Code license"></a> <a href="gradsplat/_vggt_omega/LICENSE"><img src="https://img.shields.io/badge/Weights-FAIR%20Noncommercial-6c757d" alt="Weights license"></a>
 
 <img src="assets/teaser.gif" width="88%" alt="A RealEstate10K scene rendered along a path through its six input cameras: the Gaussians as predicted in one pass (left) and after GradSplat's gradient steps (right)">
 
@@ -188,4 +188,4 @@ This work was supported by the U.S. National Science Foundation under Grant No. 
 
 ## License
 
-The code and the weights are released under the [FAIR Noncommercial Research License](LICENSE), inherited from VGGT-Ω, for noncommercial research use. The evaluation indices come from repositories under the MIT License, and the example images keep the terms of their dataset; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+The GradSplat code is released under the [MIT License](LICENSE). The code of VGGT-Ω in `gradsplat/_vggt_omega/`, the two files that adapt it (`gradsplat/heads.py` and `gradsplat/model.py`) and the weights, which are trained from the VGGT-Ω weights, are under the [FAIR Noncommercial Research License](gradsplat/_vggt_omega/LICENSE) of VGGT-Ω, for noncommercial research use. The evaluation indices come from repositories under the MIT License, and the example images keep the terms of their dataset; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
